@@ -41,12 +41,12 @@ RUN \
     apt-get install -y apt-transport-https ca-certificates gnupg
 
 COPY docker/rootfs/ /
-COPY --chown=jitsi:jitsi docker/run-skynet.sh /opt/
+COPY docker/run-skynet.sh /opt/
 
 RUN \
     apt-dpkg-wrap apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
     apt-dpkg-wrap apt-get update && \
-    apt-dpkg-wrap apt-get install -y python3.11 python3.11-venv tini libgomp1 && \
+    apt-dpkg-wrap apt-get install -y ffmpeg python3.11 python3.11-venv tini libgomp1 && \
     apt-cleanup
 
 # Principle of least privilege: create a new user for running the application
@@ -55,10 +55,10 @@ RUN \
     useradd -r -u 1001 -g jitsi jitsi
 
 # Copy virtual environment
-COPY --chown=jitsi:jitsi --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/.venv /app/.venv
 
 # Copy application files
-COPY --chown=jitsi:jitsi /skynet /app/skynet/
+COPY /skynet /app/skynet/
 
 ENV \
     # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED
@@ -71,13 +71,14 @@ ENV \
 VOLUME [ "/models" ]
 
 WORKDIR ${PYTHONPATH}
-RUN chown jitsi:jitsi ${PYTHONPATH}
+# RUN chown jitsi:jitsi ${PYTHONPATH}
 
 # Document the exposed port
 EXPOSE 8000
 
 # Use the unpriviledged user to run the application
-USER 1001
+# USER 1001
+USER root
 
 # Use tini as our PID 1
 ENTRYPOINT ["/usr/bin/tini", "--"]

@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  skynet:
+    image: theun/skynet
+    restart: ${RESTART_POLICY:-unless-stopped}
+    # command: bash -c 'while true; do sleep 2; done'
+    build:
+      dockerfile: ./Dockerfile
+      args:
+        - BASE_IMAGE_BUILD=${BASE_IMAGE_BUILD}
+        - BASE_IMAGE_RUN=${BASE_IMAGE_RUN}
+      cache_from:
+        - type=local,src=${CACHE_DIR}
+      cache_to:
+        - type=local,dest=${CACHE_DIR},mode=max
+      platforms:
+        - ${PLATFORMS}
+    environment:
+      - LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+    env_file: .env
+    ports:
+      - 8000:8000
+    volumes:
+      - /data/models:/models
