@@ -21,5 +21,7 @@ services:
     env_file: .env
     ports:
       - 8000:8000
+      - 8001:8001
     volumes:
       - /data/models:/models
+      - ~/.jitsi-meet-cfg/web:/config

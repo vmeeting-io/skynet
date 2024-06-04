@@ -33,6 +33,8 @@ async def create_webserver(app, port):
         ws_ping_interval=ws_max_ping_interval,
         ws_ping_timeout=ws_max_ping_timeout,
         ws_max_queue=ws_max_queue_size,
+        ssl_keyfile='/config/acme-certs/dev4.vmeeting.or.kr/key.pem',
+        ssl_certfile='/config/acme-certs/dev4.vmeeting.or.kr/fullchain.pem'
     )
     server = uvicorn.Server(server_config)
     await server.serve()
