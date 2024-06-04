@@ -92,3 +92,7 @@ enable_metrics = tobool(os.environ.get('ENABLE_METRICS', 'true'))
 
 # load balancing
 enable_haproxy_agent = tobool(os.environ.get('ENABLE_HAPROXY_AGENT'))
+
+# ssl
+ssl_keyfile = os.environ.get('SSL_KEYFILE')
+ssl_certfile = os.environ.get('SSL_CERTFILE')
